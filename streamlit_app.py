@@ -6,7 +6,7 @@ import openai
 
 # Load the CSV file
 def load_data():
-    file_path = '/movies_2024.csv'
+    file_path = 'movies_2024.csv'
     df = pd.read_csv(file_path)
     return df
 
