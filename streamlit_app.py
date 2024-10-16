@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 from langchain.llms import OpenAI
 import openai
 
-# Load the CSV file
+# Load the CSV file d
 def load_data():
     file_path = '/mnt/data/movies_2024.csv'
     df = pd.read_csv(file_path)
