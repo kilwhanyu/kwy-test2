@@ -1,33 +1,44 @@
 import streamlit as st
+import pandas as pd
 from langchain.llms import OpenAI
-from langchain.chains import SummarizationChain
-from langchain import PromptTemplate
+from langchain.chains import GraphCreatorChain
+import openai
 
-# Streamlit UI
-st.set_page_config(page_title="LangChain Text Summarizer", layout="centered")
-st.title("LangChain GPT-4o-Mini Text Summarizer")
+# Load the CSV file
+def load_data():
+    file_path = '/workspaces/kwy-test2/movies_2024.csv'
+    df = pd.read_csv(file_path)
+    return df
 
-# Sidebar API Key Input
-openai_api_key = st.sidebar.text_input("Enter your OpenAI API Key", type="password")
+def main():
+    st.title("Langchain-GPT Graph Chatbot")
 
-if openai_api_key:
-    try:
-        # LLM Initialization
-        llm = OpenAI(model_name="gpt-4o-mini", openai_api_key=openai_api_key)
-        summarization_chain = SummarizationChain(llm=llm)
+    # Sidebar for API key input
+    st.sidebar.header("OpenAI API Key")
+    openai_api_key = st.sidebar.text_input("Enter your OpenAI API key:", type="password")
 
-        # Text Input for Summarization
-        text_to_summarize = st.text_area("Enter text to summarize:")
+    if openai_api_key:
+        openai.api_key = openai_api_key
 
-        if st.button("Summarize"):
-            if text_to_summarize:
-                # Perform Summarization
-                summary = summarization_chain.run(text_to_summarize)
-                st.subheader("Summary:")
-                st.write(summary)
-            else:
-                st.warning("Please enter text to summarize.")
-    except ModuleNotFoundError as e:
-        st.error(f"ModuleNotFoundError: {str(e)}. Please make sure all required modules are installed.")
-else:
-    st.warning("Please enter your OpenAI API Key in the sidebar to proceed.")
+        # Load data
+        df = load_data()
+        st.write("### Loaded Data:")
+        st.dataframe(df)
+
+        # Create an instance of the GPT-4 model via Langchain
+        llm = OpenAI(api_key=openai_api_key, model_name="gpt-4o-mini")
+
+        # Chain to create graphs
+        chain = GraphCreatorChain(llm=llm)
+
+        user_input = st.text_area("Ask me anything about the data or request a graph:")
+
+        if st.button("Generate Response") and user_input:
+            try:
+                response = chain.run(df, user_input)
+                st.write(response)
+            except Exception as e:
+                st.error(f"An error occurred: {e}")
+
+if __name__ == "__main__":
+    main()
