@@ -4,14 +4,14 @@ import matplotlib.pyplot as plt
 from langchain.llms import OpenAI
 import openai
 
-# Load the CSV file d
+# Load the CSV file
 def load_data():
-    file_path = '/mnt/data/movies_2024.csv'
+    file_path = '/movies_2024.csv'
     df = pd.read_csv(file_path)
     return df
 
 def main():
-    st.title("Langchain-GPT Graph Chatbot")
+    st.title("Langchain-GPT Graph Chatbot ㅋㅋ")
 
     # Sidebar for API key input
     st.sidebar.header("OpenAI API Key")
